@@ -26,7 +26,7 @@ if choice == "Clima":
     
     st.dataframe(df_clima[df_clima['YEAR'].isin(year) & df_clima['STATION'].isin(station)], width=1000, height=200)
 
-    st.subheader("Meses con mayor temperatura por año y estación")
+    st.subheader("Evolución de la temperatura máxima mensual por año y estación")
     sub_df = df_clima[df_clima['YEAR'].isin(year) & df_clima['STATION'].isin(station)]
     mean_max_temp_month = sub_df.groupby(['STATION','YEAR','MONTH'])['TMAX'].mean().reset_index()
     fig = px.line(mean_max_temp_month, x="MONTH", y="TMAX", color='STATION', facet_col='YEAR', facet_col_wrap=3)
@@ -43,7 +43,7 @@ if choice == "Clima":
         fig = px.bar(mean_min_temp_month.groupby(['STATION'])['TMIN'].mean().reset_index().sort_values(by='TMIN', ascending=True).head(10), x='STATION', y='TMIN')
         st.plotly_chart(fig, use_container_width=True)
 
-    st.subheader("Semanas con mayor temperatura por año y estación")
+    st.subheader("Evolución de la temperatura máxima semanal por año y estación")
     mean_max_temp_week = sub_df.groupby(['STATION','YEAR','WEEK'])['TMAX'].mean().reset_index()
     fig = px.line(mean_max_temp_week, x="WEEK", y="TMAX", color='STATION', facet_col='YEAR', facet_col_wrap=3)
     st.plotly_chart(fig, use_container_width=True)
