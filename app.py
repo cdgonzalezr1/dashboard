@@ -17,7 +17,7 @@ with st.sidebar:
 
 if choice == "Clima":
     st.title("Clima CITIBikes")
-    st.subheader("Clima historico en Nueva York según las estaciones del sistema de bicicletas públicas de la ciudad CITIBikes")
+    st.subheader("Clima historico en Nueva York según las estaciones del sistema de bicicletas públicas de la ciudad")
     col1, col2 = st.columns(2)
     with col1:
         year = st.multiselect("Año", df_clima['YEAR'].unique())
