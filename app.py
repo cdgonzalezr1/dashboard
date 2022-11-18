@@ -1,5 +1,3 @@
-!pip install plotly
-
 from operator import index
 import streamlit as st
 import plotly.express as px
