@@ -1,10 +1,7 @@
 from operator import index
 import streamlit as st
 import plotly.express as px
-from pycaret.regression import setup, compare_models, pull, save_model, load_model
-import pandas_profiling
 import pandas as pd
-from streamlit_pandas_profiling import st_profile_report
 import os 
 
 st.set_page_config(page_title='CITIBikes', page_icon='🚲', layout='centered', initial_sidebar_state='auto')
@@ -51,7 +48,7 @@ if choice == "Clima":
     fig = px.line(mean_max_temp_week, x="WEEK", y="TMAX", color='STATION', facet_col='YEAR', facet_col_wrap=3)
     st.plotly_chart(fig, use_container_width=True)
     mean_min_temp_week = sub_df.groupby(['STATION','YEAR','WEEK'])['TMIN'].mean().reset_index()
-    
+
 
 
     # if choice == "Profiling": 
