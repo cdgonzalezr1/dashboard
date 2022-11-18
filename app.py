@@ -8,6 +8,7 @@ st.set_page_config(page_title='CITIBikes', page_icon='🚲', layout='centered', 
 
 if os.path.exists('./datos_clima_ny.csv'): 
     df_clima = pd.read_csv('datos_clima_ny.csv', index_col=None)
+    df_viajes = pd.read_csv('travel_data.csv', index_col=None)
 
 with st.sidebar: 
     st.image("https://www.onepointltd.com/wp-content/uploads/2020/03/inno2.png")
@@ -51,7 +52,31 @@ if choice == "Clima":
 
 
 
-    # if choice == "Profiling": 
-    #     st.title("Exploratory Data Analysis")
-    #     profile_df = df.profile_report()
-    #     st_profile_report(profile_df)
+if choice == "Viajes": 
+    st.title("Viajes CITIBikes")
+    st.subheader("Historial de viajes en el sistema de bicicletas públicas de la ciudad de Nueva York")
+    col1, col2 = st.columns(2)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        year_viajes = st.multiselect("Año", df_viajes['month'].unique())
+    with col2:
+        station_viajes = st.multiselect("Estación de origen", df_viajes['start_bike_station_name'].unique())
+
+    st.dataframe(df_viajes[df_viajes['month'].isin(year_viajes) & df_viajes['start_bike_station_name'].isin(station_viajes)], width=1000, height=200)
+
+    st.subheader("Evolución del promedio mensual de viajes por estación de origen")
+    sub_df_viajes = df_viajes[df_viajes['month'].isin(year_viajes) & df_viajes['start_bike_station_name'].isin(station_viajes)]
+    count_viajes_month = sub_df_viajes.groupby(['start_bike_station_name','month'])['tripduration'].count().reset_index()
+    fig = px.line(count_viajes_month, x="month", y="tripduration", color='start_bike_station_name')
+    st.plotly_chart(fig, use_container_width=True)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Estaciones con mayor número de viajes")
+        fig = px.bar(count_viajes_month.groupby(['start_bike_station_name'])['tripduration'].count().reset_index().sort_values(by='tripduration', ascending=False).head(10), x='start_bike_station_name', y='tripduration', labels={'start_bike_station_name':'Estación de origen', 'tripduration':'Número de viajes'})
+        st.plotly_chart(fig, use_container_width=True)
+    with col2:
+        st.subheader("Estaciones con mayor duración de viajes")
+        fig = px.bar(sub_df_viajes.groupby(['start_bike_station_name'])['tripduration'].mean().reset_index().sort_values(by='tripduration', ascending=False).head(10), x='start_bike_station_name', y='tripduration', labels={'start_bike_station_name':'Estación de origen', 'tripduration':'Duración promedio de viajes'})
+        st.plotly_chart(fig, use_container_width=True)
